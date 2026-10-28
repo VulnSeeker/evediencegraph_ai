@@ -1,14 +1,34 @@
+# EvidenceGraph AI — retrieval and generation configuration.
+#
+# Any change to a value in this file that affects retrieval output must be
+# recorded in the experiment manifest at run time (see `experiments/manifest.py`
+# in Milestone 4). The manifest is the audit trail that makes results
+# reproducible across corpus and code versions.
+
 corpus:
   passages:
+    # Group sentences into passages of roughly this many characters.
+    # Offsets are preserved, so every passage text can be validated against
+    # the source document via `validate_span_against_document`.
     target_chars: 1200
     normalizer: "evidencegraph.ingestion.normalization.normalize_text"
 
 retrieval:
+  # Shared between all conditions.
   default_top_k: 10
   context_token_budget: 4000
-  index: tfidf          # swap for sentence-transformers/all-MiniLM-L6-v2
+  index: tfidf          # swap for sentence-transformers/all-MiniLM-L6-v2 later
+
+  # Condition B — reranked passage RAG.
+  # The reranker model_id is pinned here and must be written into the
+  # experiment manifest. Changing it invalidates any previously recorded run.
+  reranker:
+    model_id: "cross-encoder/ms-marco-MiniLM-L-6-v2"
+    candidate_pool_size: 50
 
 generation:
-  provider: stub        # "stub" | "openai"
+  # "stub"   — deterministic, no network, used for tests and CI
+  # "openai" — OpenAI-compatible provider (requires the `llm` extra)
+  provider: stub
   model: gpt-4o-mini
   temperature: 0.0
