@@ -1,0 +1,14 @@
+corpus:
+  passages:
+    target_chars: 1200
+    normalizer: "evidencegraph.ingestion.normalization.normalize_text"
+
+retrieval:
+  default_top_k: 10
+  context_token_budget: 4000
+  index: tfidf          # swap for sentence-transformers/all-MiniLM-L6-v2
+
+generation:
+  provider: stub        # "stub" | "openai"
+  model: gpt-4o-mini
+  temperature: 0.0
